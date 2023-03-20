@@ -33,8 +33,7 @@
         <label for="AlsoInverted">AlsoInverted:</label><input type="checkbox" name="AlsoInverted" id="AlsoInverted" />
       </div>
       <input type="file" id="image_file_input" />
-      <button id="scan_btn" disabled="true">Scan</button>
-      
+      <button id="scan_btn">Scan</button>
       <table id="output" hidden="true">
         <tr>
           <td class="field">Text</td>
@@ -58,8 +57,7 @@
         </tr>
       </table>
     </div>
-
-    <canvas id="cvs"></canvas>
+    <canvas id="cvs" width=800 height=600></canvas>
   </div>
 
 </body>
@@ -67,4 +65,4 @@
 </html>
 
 <!-- Copyright 2023 Henry Schimke -->
-<!-- Using rxing-wasm v0.1.17 -->
+<!-- Using rxing-wasm v0.1.18 -->

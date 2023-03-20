@@ -92,3 +92,72 @@ function getHints() {
     }
     return hint_dictionary;
 }
+
+class Camvas {
+    ctx;
+    video;
+
+    constructor(ctx) {
+        this.ctx = ctx
+        this.setupVideo()
+    }
+
+    setupVideo(){
+        // We can't `new Video()` yet, so we'll resort to the vintage
+        // "hidden div" hack for dynamic loading.
+        const streamContainer = document.createElement('div')
+        this.video = document.createElement('video')
+
+        // If we don't do this, the stream will not be played.
+        // By the way, the play and pause controls work as usual
+        // for streamed videos.
+        this.video.setAttribute('autoplay', '1')
+
+        // The video should fill out all of the canvas
+        this.video.setAttribute('width', this.ctx.canvas.width)
+        this.video.setAttribute('height', this.ctx.canvas.height)
+
+        this.video.setAttribute('style', 'display:block')
+        streamContainer.appendChild(this.video)
+        document.body.appendChild(streamContainer)
+    }
+
+    async run() {
+        // The callback happens when we are starting to stream the video.
+        const stream = await navigator.mediaDevices.getUserMedia({video: true})
+
+        // Yay, now our webcam input is treated as a normal video and
+        // we can start having fun
+        try {
+            this.video.srcObject = stream;
+        } catch (error) {
+            console.log('video stream error', error)
+            this.video.src = URL.createObjectURL(stream);
+        }
+        // Let's start drawing the canvas!
+        this.update()
+    }
+
+    update() {
+        const self = this
+        let last = Date.now()
+        const loop = function() {
+            // For some effects, you might want to know how much time is passed
+            // since the last frame; that's why we pass along a Delta time `dt`
+            // variable (expressed in milliseconds)
+            var dt = Date.now() - last
+            self.draw(self.video, dt)
+            last = Date.now()
+            requestAnimationFrame(loop)
+        }
+        requestAnimationFrame(loop)
+    }
+
+    draw(video, dt) {
+        this.ctx.drawImage(video, 0, 0)
+    }
+}
+
+const ctx = document.querySelector("#cvs").getContext('2d')
+let c = new Camvas(ctx)
+c.run()
