@@ -117,14 +117,18 @@ class Camvas {
         this.video.setAttribute('width', this.ctx.canvas.width)
         this.video.setAttribute('height', this.ctx.canvas.height)
 
-        this.video.setAttribute('style', 'display:block')
+        this.video.setAttribute('style', 'display:none')
         streamContainer.appendChild(this.video)
         document.body.appendChild(streamContainer)
     }
 
     async run() {
         // The callback happens when we are starting to stream the video.
-        const stream = await navigator.mediaDevices.getUserMedia({video: true})
+        const stream = await navigator.mediaDevices.getUserMedia({video: {
+            facingMode: {
+                exact: 'environment'
+            }
+        }})
 
         // Yay, now our webcam input is treated as a normal video and
         // we can start having fun
